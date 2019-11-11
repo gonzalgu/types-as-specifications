@@ -12,7 +12,8 @@ import Data.Kind (Type, Constraint)
 import Data.Type.Equality ((:~:) (..))
 import GHC.TypeNats
 import Prelude hiding (Bool(..))
-import Typelevel.Basics hiding (Nat)
+-- fixed import
+import Typelevel.Exercises.Basics hiding (Nat)
 
 ----------------------------------------
 -- Exercise 1
@@ -23,11 +24,11 @@ import Typelevel.Basics hiding (Nat)
 ----------------------------------------
 
 data NList (n :: Nat) (a :: *) where
-  NNil :: NList 'Zero a
-  NCons :: a -> NList n a -> NList (1 '+ n) a
+  NNil :: NList 0 a
+  NCons :: a -> NList n a -> NList (n '+ 1) a
 
 -- Note: You will have to modify the type signature
-nappend :: NList n a -> NList m b -> Nlist o c
+nappend :: NList n a -> NList m b -> NList o c
 nappend = undefined
 
 ----------------------------------------
