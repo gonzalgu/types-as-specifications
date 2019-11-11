@@ -23,6 +23,8 @@ import Typelevel.Basics hiding (Nat)
 ----------------------------------------
 
 data NList (n :: Nat) (a :: *) where
+  NNil :: NList 'Zero a
+  NCons :: a -> NList n a -> NList (1 '+ n) a
 
 -- Note: You will have to modify the type signature
 nappend :: NList n a -> NList m b -> Nlist o c

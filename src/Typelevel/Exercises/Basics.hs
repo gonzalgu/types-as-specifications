@@ -39,6 +39,10 @@ type (||) a b = Or a b
 --   Implement the type-level AND operation between two types of kind Bool
 ----------------------------------------
 type family And a b where
+  And 'True 'True = 'True
+  And 'True 'False = 'False
+  And 'False 'True = 'False
+  And 'False 'False = 'False
 
 
 -- | Type synonym using type operators
@@ -60,6 +64,8 @@ testAnd4 = Refl :: And 'False 'False :~: 'False
 --   type is 'True, and the 'b' type if the 'c' type is 'False
 ----------------------------------------
 type family IfThenElse c a b where
+  IfThenElse 'True a b = a
+  IfThenElse 'False a b = b
 
 testIfThenElse1 = Refl :: IfThenElse 'True Int Bool :~: Int
 testIfThenElse2 = Refl :: IfThenElse 'False Int Bool :~: Bool
@@ -88,13 +94,20 @@ type x + y = Add x y
 
 -- | Multiplication of type-level naturals
 type family Mult (x :: Nat) (y :: Nat) where
+  Mult n One = n
+  Mult One n = n
+  Mult 'Zero n = 'Zero
+  Mult n 'Zero = 'Zero
+  Mult ('Succ n) m = Add m (Mult n m)
 
 type family (:*:) a b where
   x :*: y = Mult x y
 
-testMult1 = Refl :: Mult One Zero :~: Zero
-testMult2 = Refl :: Mult One One :~: One
+testMult1 = Refl :: Mult One Zero  :~: Zero
+testMult2 = Refl :: Mult One One   :~: One
 testMult3 = Refl :: Mult Three Two :~: Six
+testMult4 = Refl :: Mult One Three :~: Three
+testMult5 = Refl :: Mult Zero One  :~: Zero
 
 ----------------------------------------
 -- Exercise 4
@@ -104,6 +117,10 @@ testMult3 = Refl :: Mult Three Two :~: Six
 
 -- | Exponentiation of type-level naturals
 type family Exp (x :: Nat) (y :: Nat) :: Nat where
+  Exp 'Zero   n         = 'Zero
+  Exp n       'Zero     = One
+  Exp n       One       = n
+  Exp n       ('Succ m) = Mult n (Exp n m)
 
 type (^) x y = Exp x y
 
